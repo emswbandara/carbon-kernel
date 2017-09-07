@@ -192,9 +192,19 @@ public final class CarbonUILoginUtil {
                         indexPageURL = cookie.getValue();
                     }
                 }
+
+                if (indexPageURL == null) {
+                    return null;
+                }
+
                 // Removing any tenant specific strings from the cookie value for the indexPageURL
                 if (tenantEnabledUriPattern.matcher(indexPageURL).matches()) {
                     indexPageURL = CarbonUIUtil.removeTenantSpecificStringsFromURL(indexPageURL);
+                }
+
+                // If the index page URL contains a scheme or the tenant-dashboard, redirects to default index page
+                if (hasScheme(indexPageURL) || indexPageURL.contains("tenant-dashboard/index.jsp")) {
+                    indexPageURL = null;
                 }
             }
         }
@@ -669,6 +679,29 @@ public final class CarbonUILoginUtil {
         if (msgCtx != null) {
             String incomingTransportName = msgCtx.getIncomingTransportName();
             return incomingTransportName.equals(ServerConstants.LOCAL_TRANSPORT);
+        }
+        return false;
+    }
+
+    /**
+     * Determine if the character is allowed in the scheme of a URI.
+     */
+    private static boolean isSchemeChar(char c) {
+        return Character.isLetterOrDigit(c) || c == '+' || c == '-' || c == '.';
+    }
+
+    /**
+     * Determine if a URI string has a scheme component.
+     */
+    private static boolean hasScheme(String uri) {
+        int len = uri.length();
+        for (int i = 0; i < len; i++) {
+            char c = uri.charAt(i);
+            if (c == ':') {
+                return i > 0;
+            } else if (!isSchemeChar(c)) {
+                return false;
+            }
         }
         return false;
     }

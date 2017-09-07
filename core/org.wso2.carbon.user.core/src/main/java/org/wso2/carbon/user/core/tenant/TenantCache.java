@@ -16,6 +16,7 @@ public class TenantCache {
     public static final String TENANT_CACHE = "TENANT_CACHE";
     private static Log log = LogFactory.getLog(TenantCache.class);
 
+    //private static Cache<TenantIdKey,TenantCacheEntry> cache = null;
     private static TenantCache tenantCache = new TenantCache();
 
     private TenantCache() {
@@ -63,9 +64,9 @@ public class TenantCache {
             Cache<TenantIdKey, T> cache = getTenantCache();
             if (cache != null) {
                 cache.put(key, entry);
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug(TENANT_CACHE + " which is under " + TENANT_CACHE_MANAGER + ", added the entry : " + entry
-                            + " for the key : " + key + " successfully");
+                        + " for the key : " + key + " successfully");
                 }
             } else {
                 if (log.isDebugEnabled()) {
